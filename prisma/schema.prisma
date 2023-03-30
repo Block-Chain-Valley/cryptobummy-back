@@ -6,6 +6,29 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Birth {
+  id      String @id @default(cuid()) @map("_id")
+  owner   String
+  BummyId Int
+  momId   Int
+  dadId   Int
+  genes   Int
+}
+
+model Exhaust {
+  id    String @id @default(cuid()) @map("_id")
+  owner String
+  momId Int
+  dadId Int
+}
+
+model Transfer {
+  id      String @id @default(cuid()) @map("_id")
+  from    String
+  to      String
+  tokenId Int
 }
