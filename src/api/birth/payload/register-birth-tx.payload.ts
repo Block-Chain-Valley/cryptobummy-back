@@ -9,10 +9,10 @@ export class RegisterBirthTxPayload {
     example: constants.HashZero,
   })
   txHash: string;
-  @ApiProperty({
-    type: String,
-    title: 'Address',
-    example: constants.AddressZero,
-  })
-  address: string;
+  // @ApiProperty({
+  //   type: String,
+  //   title: 'Address',
+  //   example: constants.AddressZero,
+  // })
+  // address: string;
 }

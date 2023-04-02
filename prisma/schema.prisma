@@ -10,16 +10,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Birth {
+model Bummy {
   id          String   @id @default(cuid()) @map("_id")
   blockNumber Int
   createdAt   DateTime @default(now())
 
   owner   String
-  BummyId String
-  momId   String
-  dadId   String
-  genes   String
+  BummyId String @unique
+
+  //
+  momId String
+  // mom   Bummy  @relation(fields: [BummyId], references: [id])
+  dadId String
+  // dad   Bummy  @relation(fields: [BummyId], references: [id])
+  genes String
 }
 
 model Exhaust {

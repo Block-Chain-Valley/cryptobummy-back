@@ -1,32 +1,45 @@
-import { Controller, ParseIntPipe, Post } from '@nestjs/common';
-import { BirthHistoryDto } from './dto/birth-history.dto';
+import {
+  Controller,
+  ParseIntPipe,
+  Post,
+  Get,
+  Param,
+  Body,
+} from '@nestjs/common';
+import {
+  BirthHistoryDto,
+  BirthHistoryListDto,
+  BirthHistoryResultDto,
+} from './dto/birth-history.dto';
 import { BirthService } from './birth.service';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { RegisterBirthTxPayload } from './payload/register-birth-tx.payload';
 
 @Controller('birth')
 export class BirthController {
   constructor(private readonly birthService: BirthService) {}
-  @Post('tx/mint/add/:txHash')
+  @Post('tx/mint/add')
   @ApiOperation({ summary: 'Post birth event by txHash' })
-  @ApiResponse({ type: BirthHistoryDto })
-  async postMintTransaction(
-    @Param('txHash', ParseIntPipe) txHash: number,
-  ): Promise<BirthHistoryDto> {
+  @ApiResponse({ type: BirthHistoryResultDto })
+  async postMintTransaction(@Body() { txHash }: RegisterBirthTxPayload) {
+    //Payload를 쓰는 이유는, 원하는 데이터 형태로 받기 위해서
     return this.birthService.addBirthEvent(txHash);
   }
+
   @Get('tx/mint/get/:BummyId')
   @ApiOperation({ summary: 'Get birth transaction by BummyId' })
   @ApiResponse({ type: BirthHistoryDto })
   async getMintTransaction(
-    @Param('BummyId', ParseIntPipe) BummyId: number,
+    @Param('BummyId') BummyId: string,
   ): Promise<BirthHistoryDto> {
     return this.birthService.getBirthEvent(BummyId);
   }
   @Get('tx/mint/gets/:owner')
   @ApiOperation({ summary: 'Get birth transaction by owner' })
-  @ApiResponse({ type: [BirthHistoryDto] })
+  @ApiResponse({ type: BirthHistoryListDto })
   async getMintTransactions(
-    @Param('owner', ParseIntPipe) owner: string,
-  ): Promise<BirthHistoryDto[]> {
+    @Param('owner') owner: string,
+  ): Promise<BirthHistoryListDto> {
     return this.birthService.getBirthEvents(owner);
   }
 }
