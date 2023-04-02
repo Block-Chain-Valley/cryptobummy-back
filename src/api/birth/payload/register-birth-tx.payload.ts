@@ -16,3 +16,12 @@ export class RegisterBirthTxPayload {
   // })
   // address: string;
 }
+
+export class getBirthTxPayload {
+  @ApiProperty({
+    type: String,
+    title: 'BummyId',
+    example: '0x12341251',
+  })
+  BummyId: string;
+}
