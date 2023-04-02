@@ -11,12 +11,15 @@ datasource db {
 }
 
 model Birth {
-  id      String @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
+  blockNumber Int
+  createdAt   DateTime @default(now())
+
   owner   String
-  BummyId Int
-  momId   Int
-  dadId   Int
-  genes   Int
+  BummyId String
+  momId   String
+  dadId   String
+  genes   String
 }
 
 model Exhaust {

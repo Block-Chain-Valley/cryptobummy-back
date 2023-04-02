@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { providers } from 'ethers';
+const abi = require('../../abi/Cryptobummy.json');
+
 @Injectable()
 export class EventExtractService {
   constructor() {}
@@ -37,5 +40,6 @@ export class EventExtractService {
         log.address === address && log.topics[0] === this.BIRTH_SIGNATURE,
     );
     //추출한 정보에서 다시 한번 filtering이 필요함
+    return birthEventLogs;
   }
 }
