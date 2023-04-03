@@ -34,7 +34,10 @@ model Exhaust {
 }
 
 model Transfer {
-  id      String @id @default(cuid()) @map("_id")
+  id          String   @id @default(cuid()) @map("_id")
+  blockNumber Int
+  createdAt   DateTime @default(now())
+
   from    String
   to      String
   tokenId Int

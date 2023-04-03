@@ -13,12 +13,15 @@ import {
 } from './dto/birth-history.dto';
 import { BirthService } from './birth.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RegisterBirthTxPayload } from './payload/register-birth-tx.payload';
+import {
+  getBirthTxPayload,
+  RegisterBirthTxPayload,
+} from './payload/register-birth-tx.payload';
 
 @Controller('birth')
 export class BirthController {
   constructor(private readonly birthService: BirthService) {}
-  @Post('tx/mint/add')
+  @Post('add')
   @ApiOperation({ summary: 'Post birth event by txHash' })
   @ApiResponse({ type: BirthHistoryResultDto })
   async postMintTransaction(@Body() { txHash }: RegisterBirthTxPayload) {
@@ -26,15 +29,15 @@ export class BirthController {
     return this.birthService.addBirthEvent(txHash);
   }
 
-  @Get('tx/mint/get/:BummyId')
+  @Get('get')
   @ApiOperation({ summary: 'Get birth transaction by BummyId' })
   @ApiResponse({ type: BirthHistoryDto })
   async getMintTransaction(
-    @Param('BummyId') BummyId: string,
+    @Body() { BummyId }: getBirthTxPayload,
   ): Promise<BirthHistoryDto> {
     return this.birthService.getBirthEvent(BummyId);
   }
-  @Get('tx/mint/gets/:owner')
+  @Get('gets/:owner')
   @ApiOperation({ summary: 'Get birth transaction by owner' })
   @ApiResponse({ type: BirthHistoryListDto })
   async getMintTransactions(
