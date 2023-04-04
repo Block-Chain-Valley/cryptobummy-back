@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/services/prisma.service';
 import { ethers } from 'ethers';
 import { BadRequestException } from '@nestjs/common';
+import { Transfer } from '@prisma/client';
+import { TransferEventDto } from './dto/transfer-history.dto';
 
 @Injectable()
 export class TransferService {
@@ -36,7 +38,44 @@ export class TransferService {
     );
 
     const ie = inviteEvent[0];
-    let [, from, to] = ie.topics;
-    //TODO
+    //TODO sliced data 넣는 부분////////////////////////////////
+    //from
+    //to
+    //tokenId
+    ////////////////////////////////////////////////////////////////
+
+    const block = await this.provider.getBlock(receipt.blockNumber);
+    const createdAt = new Date(block.timestamp * 1000);
+
+    const transferEvent = await this.prismaService.transfer.create({
+      data: {
+        blockNumber: receipt.blockNumber,
+        createdAt: createdAt,
+        from: from,
+        to: to,
+        tokenId: tokenId,
+      },
+    });
+  }
+  async getTransferEvent(
+    from: string,
+    to: string,
+    tokenId: number,
+  ): Promise<TransferEventDto> {
+    const transferEvent = await this.prismaService.transfer.findUnique({
+      select: {
+        blockNumber: true,
+        createdAt: true,
+        from: true,
+        to: true,
+        tokenId: true,
+      },
+      where: {
+        from: from,
+        to: to,
+        tokenId: tokenId,
+      },
+    });
+    return TransferEventDto.of(transferEvent);
   }
 }

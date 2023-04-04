@@ -41,4 +41,6 @@ model Transfer {
   from    String
   to      String
   tokenId Int
+
+  @@unique([from, to, tokenId])
 }
