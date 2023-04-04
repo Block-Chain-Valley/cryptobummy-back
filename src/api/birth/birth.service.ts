@@ -73,7 +73,23 @@ export class BirthService {
     const block = await this.provider.getBlock(receipt.blockNumber);
     const createdAt = new Date(block.timestamp * 1000);
 
+    // COMM: create만 할거면 `prisma.bummy.create`의 리턴값을 받지 않아도 됨.
+    // 하지만 보통은 create 결과를 리턴해주는게 국룰...!
+    // create({...}) -> 이 안에서도 `select` 사용해서 데이터 가져올 수 있다.
     const birthEvent = await this.prisma.bummy.create({
+      /**
+       * // COMM: 꿀팁) 이렇게 써도 된다.
+        data: {
+          BummyId,
+          momId,
+          dadId,
+          genes,
+          createdAt,
+          owner,
+          blockNumber: receipt.blockNumber,
+        },
+       */
+
       data: {
         BummyId: BummyId,
         momId: momId,
@@ -110,6 +126,7 @@ export class BirthService {
     return BirthHistoryDto.of(birth);
   }
 
+  // COMM: 함수명을 getBirthEventsByOwner 로 하면 깔끔할 듯
   async getBirthEvents(owner: string): Promise<BirthHistoryListDto> {
     const history = await this.prisma.bummy.findMany({
       select: {

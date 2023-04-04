@@ -14,32 +14,39 @@ model Bummy {
   id          String   @id @default(cuid()) @map("_id")
   blockNumber Int
   createdAt   DateTime @default(now())
-
   owner   String
-  BummyId String @unique
-
-  //
-  momId String
-  // mom   Bummy  @relation(fields: [BummyId], references: [id])
-  dadId String
-  // dad   Bummy  @relation(fields: [BummyId], references: [id])
   genes String
+
+  // COMM: 아래의 relation을 원했던 걸까요?
+  // 일관성 있게 BummyId -> bummyId로 네이밍 하면 좋을 것 같습니다.
+  BummyId String @unique
+  momId String
+  mom   Bummy   @relation("mom_bummy", fields: [momId], references: [BummyId], onDelete: NoAction, onUpdate: NoAction)
+  dadId String
+  dad   Bummy   @relation("dad_bummy", fields: [dadId], references: [BummyId], onDelete: NoAction, onUpdate: NoAction)
+  maternals Bummy[] @relation("mom_bummy")
+  faternals Bummy[] @relation("dad_bummy")
 }
 
 model Exhaust {
   id    String @id @default(cuid()) @map("_id")
   owner String
+  // COMM: BummyId가 string이므로 momId, dadId 모두 string으로 저장하는 것이 좋을 듯.
   momId Int
   dadId Int
+  // COMM: 여기도 mom, dad를 Bummy 모델과 relation 주면 좋을 듯
 }
 
 model Transfer {
   id          String   @id @default(cuid()) @map("_id")
   blockNumber Int
+  // COMM: createdAt이 실제 DB에 저장된 시간으로 해야할지, 아니면 blockNumber에 대한 timestamp로 해야할지?
   createdAt   DateTime @default(now())
-
   from    String
   to      String
+  // COMM: BummyId가 string이므로 string으로 저장하는 것이 좋을 듯.
+  // 여기도 mom, dad를 Bummy 모델과 relation 주면 좋을 듯.
+  // 사용 예시) transfer된 버미의 mom, dad의 owner을 구하려면?
   tokenId Int
 
   @@unique([from, to, tokenId])
